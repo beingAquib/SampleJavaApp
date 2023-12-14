@@ -1,11 +1,392 @@
-<html>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Mate - Course Registration</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #1c1c1c; /* Dark background color */
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            color: #fff; /* White text color */
+        }
+
+        .container {
+            max-width: 1200px;
+        }
+
+        #main-container {
+            display: flex;
+            width: 100%;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        #left-div {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            animation: slideInLeft 1s ease-in-out;
+        }
+
+        #laptop {
+            width: 400px;
+            height: 300px;
+            background-color: #2a2a2a; /* Darker laptop background color */
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        #screen {
+            width: 80%;
+            height: 70%;
+            background-color: #1c1c1c; /* Dark background color for screen */
+            margin: 15px auto;
+            border-radius: 20px; /* Increased border-radius for a smoother appearance */
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 6px solid #4caf50; /* Border color */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .logo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+
+        .logo {
+            max-width: 80%;
+            max-height: 80%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .logo.active {
+            opacity: 1;
+        }
+
+        #right-div {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: slideInRight 1s ease-in-out;
+        }
+
+        #header {
+            text-align: center;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease-in-out;
+            transition: all 0.5s ease-in-out; /* Transition effect for the header */
+        }
+
+        #header h1 {
+            font-size: 3em; /* Increased font size */
+            color: #ffcc00; /* Light yellow color */
+        }
+
+        #header span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-in-out forwards, scaleUp 1s ease-in-out forwards;
+        }
+
+        #header span:nth-child(1) { animation-delay: 0.1s; }
+        #header span:nth-child(2) { animation-delay: 0.2s; }
+        #header span:nth-child(3) { animation-delay: 0.3s; }
+        #header span:nth-child(4) { animation-delay: 0.4s; }
+        #header span:nth-child(5) { animation-delay: 0.5s; }
+        #header span:nth-child(6) { animation-delay: 0.6s; }
+        #header span:nth-child(7) { animation-delay: 0.7s; }
+
+        #registration-form {
+            background-color: #333; /* Dark background color for registration form */
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #4caf50; /* Green color for heading */
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input {
+            margin-bottom: 15px;
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #555; /* Darker border color */
+            border-radius: 5px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .company-name {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #4caf50; /* Green color for company name */
+        }
+
+        .promo-message {
+            text-align: center;
+            color: #4caf50; /* Green color for promotion */
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Benefits Section */
+        .benefits {
+            width: 300px; /* Adjust as needed */
+            text-align: left;
+            color: #fff;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .benefits h3 {
+            color: #4caf50; /* Green color for benefits heading */
+            margin-bottom: 10px;
+        }
+
+        .benefits ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .benefits li {
+            margin-bottom: 10px;
+        }
+
+        /* Code Mate Animation */
+        .code-mate {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 4em; /* Increased font size */
+            color: #ffcc00; /* Light yellow color */
+            margin-top: 20px;
+            font-family: 'Pacifico', cursive; /* Added a fun cursive font */
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        .code-mate span {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s ease-in-out forwards, scaleUp 1s ease-in-out forwards;
+        }
+
+        .code-mate span:nth-child(1) { animation-delay: 0.1s; }
+        .code-mate span:nth-child(2) { animation-delay: 0.2s; }
+        .code-mate span:nth-child(3) { animation-delay: 0.3s; }
+        .code-mate span:nth-child(4) { animation-delay: 0.4s; }
+        .code-mate span:nth-child(5) { animation-delay: 0.5s; }
+        .code-mate span:nth-child(6) { animation-delay: 0.6s; }
+        .code-mate span:nth-child(7) { animation-delay: 0.7s; }
+
+        /* Additional animation for scaling up each alphabet */
+        @keyframes scaleUp {
+            from {
+                transform: scale(0.5);
+            }
+            to {
+                transform: scale(1);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
 <body>
-<h1><font color='red'>Welcome to DevOps (Test App)<font></h1>
-<h2>Learn In Easy Way </h2>
+    <div class="container">
+        <div id="main-container">
+            <div id="left-div">
+                <div id="laptop" class="mx-auto">
+                    <div id="screen">
+                        <div class="logo-container">
+                            <!-- Add your logos here -->
+                            <img class="logo active" src="logo1.png" alt="Logo 1">
+                            <img class="logo" src="logo2.png" alt="Logo 2">
+                            <!-- Add more logos as needed -->
+                        </div>
+                    </div>
+                </div>
 
-<a href="https://facebook.com/groups/thejavatemple">Click Here To Website</a>
+                <div class="benefits mt-5">
+                    <!-- Linux Commands Transition -->
+                    <h3>Linux Commands Transition:</h3>
+                    <pre>
+                        <code>
+                            <!-- Add your Linux commands here -->
+                            $ ls
+                            $ cd /path/to/directory
+                            $ mkdir new_directory
+                            $ nano filename.txt
+                            $ git add .
+                            $ git commit -m "Commit message"
+                            $ git push
+                        </code>
+                    </pre>
+                </div>
+            </div>
 
-<br/>
+            <div id="right-div">
+                <!-- Code Mate Animation -->
+                <div id="header">
+                    <div class="code-mate">
+                        <span>C</span>
+                        <span>o</span>
+                        <span>d</span>
+                        <span>e</span>
+                        <span> </span>
+                        <span>M</span>
+                        <span>a</span>
+                        <span>t</span>
+                        <span>e</span>
+                    </div>
+                </div>
 
+                <div id="registration-form" class="mx-auto">
+                    <h2>Course Registration</h2>
+                    <form action="/process-registration" method="post">
+                        <div class="form-group">
+                            <label for="courseName">Course Name:</label>
+                            <input type="text" id="courseName" name="courseName" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="studentName">Your Name:</label>
+                            <input type="text" id="studentName" name="studentName" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="studentID">Student ID:</label>
+                            <input type="text" id="studentID" name="studentID" class="form-control" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Register</button>
+                    </form>
+                    <div class="company-name mt-4">Code Mate</div>
+                    <div class="promo-message">Enroll today for only $999!</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // JavaScript for logo slideshow
+        document.addEventListener("DOMContentLoaded", function() {
+            var logos = document.querySelectorAll('.logo');
+            var currentLogo = 0;
+            var transitionInProgress = false;
+
+            function nextLogo() {
+                transitionInProgress = true;
+                logos[currentLogo].classList.remove('active');
+                currentLogo = (currentLogo + 1) % logos.length;
+                logos[currentLogo].classList.add('active');
+            }
+
+            setInterval(function() {
+                if (!transitionInProgress) {
+                    nextLogo();
+                    setTimeout(function() {
+                        transitionInProgress = false;
+                    }, 1000);
+                }
+            }, 3000);
+        });
+    </script>
 </body>
 </html>
